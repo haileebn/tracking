@@ -4,12 +4,12 @@ const bodyParser = require('body-parser');
 const mongoClient = require('mongodb').MongoClient;
 const URL_CONNECT = "mongodb://localhost:27017";
 const dbName = "mydb"
-const port = 5000;
+const port = process.env.PORT || 3000;
 
 mongoClient.connect(URL_CONNECT,{ useNewUrlParser: true } , (error, client) => {
   app.use(express.static(__dirname + '/public'));
-  app.use(bodyParser.urlencoded({extended: true}))
-	app.use(bodyParser.json())
+  app.use(bodyParser.urlencoded({extended: true}));
+  app.use(bodyParser.json());
   const db = client.db(dbName);
   
   app.get('/lastdata', (req, res) => {
@@ -21,7 +21,9 @@ mongoClient.connect(URL_CONNECT,{ useNewUrlParser: true } , (error, client) => {
             res.send(result);
       });
   });
-
+  app.get('/', (req, res) => {
+      res.redirect('/tracking');
+  });
   app.get('/tracking', (req, res) => {
 
       res.sendfile(__dirname + '/tracking.html');
